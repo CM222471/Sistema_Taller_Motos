@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/header :: header(title='Roles')"></head>
+
+<body>
+    <div id="wrapper">
+        <div th:replace="fragments/sidebar :: sidebar"></div>
+
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <div class="container-fluid p-4">
+
+                    <!-- Encabezado dinámico -->
+                    <div
+                        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h1 class="h2" th:text="${rol.idRol != null} ? 'Editar Rol' : 'Nuevo Rol'">
+                        </h1>
+                    </div>
+
+                    <!-- Mensajes flash -->
+                    <div th:if="${mensaje}"
+                        th:classappend="${tipoMensaje == 'success' ? 'alert alert-success' : 'alert alert-danger'}"
+                        class="alert alert-dismissible fade show" role="alert">
+                        <span th:text="${mensaje}"></span>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <!-- Formulario Rol -->
+                    <form th:action="@{${rol.idRol == null ? '/roles/crear' : '/roles/editar/' + rol.idRol} }"
+                        th:object="${rol}" method="post">
+
+                        <input type="hidden" th:field="*{idRol}" />
+
+                        <!-- Descripción -->
+                        <div class="form-group mb-3">
+                            <label for="descripcion" class="form-label">Descripción</label>
+                            <input type="text" class="form-control" th:field="*{descripcion}" id="descripcion"
+                                placeholder="Ejemplo: Administrador" maxlength="25" required>
+                        </div>
+
+                        <!-- Estado -->
+                        <div class="form-group mb-3">
+                            <label for="estado" class="form-label">Estado</label>
+                            <select id="estado" th:field="*{estado}" class="form-control" required>
+                                <option value="" disabled selected>Seleccione un estado</option>
+                                <option value="A">Activo</option>
+                                <option value="I">Inactivo</option>
+                            </select>
+                        </div>
+
+                        <!-- Botones -->
+                        <button type="submit" class="btn btn-success">Guardar</button>
+                        <a href="/roles/listar" class="btn btn-secondary">Cancelar</a>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="fragments/jsComponents :: jsScripts"></div>
+</body>
+
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/header :: header(title='Roles')"></head>
+
+<body>
+    <div id="wrapper">
+        <div th:replace="fragments/sidebar :: sidebar"></div>
+
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <div class="container-fluid p-4">
+                    
+                    <!-- Encabezado -->
+                    <div
+                        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h1 class="h2">Roles</h1>
+                    </div>
+
+                    <!-- Botón agregar rol -->
+                    <a href="/roles/nuevo" class="btn btn-primary mb-3">Agregar Rol</a>
+
+                    <!-- Mensajes flash -->
+                    <div th:if="${mensaje}"
+                         th:classappend="${tipoMensaje == 'success' ? 'alert alert-success' : 'alert alert-danger'}"
+                         role="alert" class="mt-3">
+                        <span th:text="${mensaje}"></span>
+                    </div>
+
+                    <!-- Tabla de roles -->
+                    <div class="table-responsive">
+                        <table class="table table-striped" width="100%" cellspacing="0" id="dataTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>                                    
+                                    <th>Descripción</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="rol : ${roles}">
+                                    <td th:text="${rol.idRol}"></td>                               
+                                    <td th:text="${rol.descripcion}"></td>
+                                    <td>
+                                        <!-- Editar -->
+                                        <a th:href="@{/roles/editar/{id}(id=${rol.idRol})}">
+                                            <i class="fas fa-edit" style="color: #085691;"></i>
+                                        </a>
+
+                                        <!-- Eliminar -->
+                                        <a th:href="@{/roles/eliminar/{id}(id=${rol.idRol})}"
+                                           onclick="return confirm('¿Estás seguro de que deseas eliminar este rol?');">
+                                            <i class="fas fa-trash-alt" style="color: #085691;"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div th:replace="fragments/jsComponents :: jsScripts"></div>
+</body>
+</html>
