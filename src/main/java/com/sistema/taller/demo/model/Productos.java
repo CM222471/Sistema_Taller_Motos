@@ -36,7 +36,7 @@ public class Productos {
     private String descripcion;
 
     @Column(name = "CANTIDAD_ACTUAL", nullable = false)
-    private Integer cantidad;
+    private Integer stockActual; 
 
     @Column(name = "Estado", nullable = false)
     private String estado;
