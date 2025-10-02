@@ -53,8 +53,8 @@
                             <label for="estado" class="form-label">Estado</label>
                             <select id="estado" name="estado" class="form-select" th:field="*{estado}" required>
                                 <option value="" disabled selected>Seleccionar...</option>
-                                <option value="A         " th:selected="${categorias.estado == 'A'}">Activo</option>
-                                <option value="I         " th:selected="${categorias.estado == 'I'}">Inactivo</option>
+                                <option value="true" th:selected="${categorias.estado == 'true'}">Activo</option>
+                                <option value="false" th:selected="${categorias.estado == 'false'}">Inactivo</option>
                             </select>
                         </div>
 

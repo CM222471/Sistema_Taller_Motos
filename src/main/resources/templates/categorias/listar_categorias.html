@@ -37,6 +37,7 @@
                         <table class="table table-striped" width="100%" cellspacing="0" id="dataTable">
                             <thead>
                                 <tr>
+                                    <th>Id</th>
                                     <th>Nombre</th>
                                     <th>Descripción</th>
                                     <th>Acciones</th>
@@ -44,6 +45,7 @@
                             </thead>
                             <tbody>
                                 <tr th:each="cat : ${categorias}">
+                                    <td th:text="${cat.idCategoria}">Id</td>
                                     <td th:text="${cat.nombre}">Nombre</td>
                                     <td th:text="${cat.descripcion}">Descripción</td>
                                     <td>

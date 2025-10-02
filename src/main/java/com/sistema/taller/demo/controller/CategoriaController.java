@@ -27,6 +27,8 @@ public class CategoriaController {
         return "categorias/listar_categorias";
     }
 
+
+
     // Formulario nueva categoría
     @GetMapping("/categorias/nueva")
     public String mostrarFormularioCategoria(Model model) {

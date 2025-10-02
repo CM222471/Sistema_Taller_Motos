@@ -27,10 +27,10 @@ public class Productos {
 
     @ManyToOne
     @JoinColumn(name = "ID_CATEGORIA", referencedColumnName = "ID_CATEGORIA" , nullable = false)
-    private Categorias id_categoria;
+    private Categorias idCategoria;
 
-    @Column(name = "NOMBRE", nullable = false)
-    private String nombre_producto;
+    @Column(name = "NOMBRE_PRODUCTO", nullable = false)
+    private String nombreProducto;
 
     @Column(name = "DESCRIPCION", nullable = false)
     private String descripcion;
@@ -38,7 +38,7 @@ public class Productos {
     @Column(name = "CANTIDAD_ACTUAL", nullable = false)
     private Integer stockActual; 
 
-    @Column(name = "Estado", nullable = false)
+    @Column(name = "ESTADO", nullable = false)
     private String estado;
 
     @Column(name = "PRECIO", nullable = false)

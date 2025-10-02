@@ -22,9 +22,10 @@ public class CategoriaService {
         return categoriaRepository.findById(id).orElse(null);
     }
 
-    public Categorias guardar(Categorias usuario) {
-        return categoriaRepository.save(usuario);
-    }
+    public Categorias guardar(Categorias categoria) {
+    return categoriaRepository.save(categoria);
+}
+
 
     public void eliminar(Integer id) {
         categoriaRepository.deleteById(id);
