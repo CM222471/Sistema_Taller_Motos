@@ -1,0 +1,90 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/header :: header(title = 'Productos')">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="wrapper">
+        <div th:replace="fragments/sidebar :: sidebar"></div>
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+            <!-- Main Content -->
+            <div id="content">
+                <div class="container-fluid p-4">
+                    <div
+                        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h1 th:text="${#strings.isEmpty(productos.idProducto) ? 'Agregar producto' : 'Editar producto'}"
+                            class="h2"></h1>
+                    </div>
+
+                    <div th:if="${mensaje}"
+                        th:classappend="${tipoMensaje == 'success' ? 'alert alert-success alert-dismissible fade show' : 'alert alert-danger alert-dismissible fade show'}"
+                        role="alert">
+                        <span th:text="${mensaje}"></span>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <form
+                        th:action="@{${productos.idProducto == null ? '/productos/crear' : '/productos/editar/' + productos.idProducto} }"
+                        th:object="${productos}" method="post">
+
+                        <div class="mb-3">
+    <label for="nombreProducto" class="form-label">Nombre del producto</label>
+    <input type="text" id="nombreProducto" name="nombreProducto" class="form-control" 
+           th:field="*{nombreProducto}" required>
+</div>
+
+<div class="mb-3">
+    <label for="descripcion" class="form-label">Descripción</label>
+    <input type="text" id="descripcion" name="descripcion" class="form-control" 
+           th:field="*{descripcion}" required>
+</div>
+
+
+<div class="mb-3">
+    <label for="stockActual" class="form-label">Stock actual</label>
+    <input type="number" id="stockActual" name="stockActual" class="form-control" 
+           th:field="*{stockActual}" required>
+</div>
+
+<div class="mb-3">
+    <label for="estado" class="form-label">Estado</label>
+    <select id="estado" name="estado" class="form-control" th:field="*{estado}" required>
+        <option value="Disponible">Disponible</option>
+        <option value="Agotado">Agotado</option>
+    </select>
+</div>
+
+<div class="mb-3">
+    <label for="precio" class="form-label">Precio</label>
+    <input type="number" step="0.01" id="precio" name="precio" class="form-control" 
+           th:field="*{precio}" required>
+</div>
+<div class="mb-3">
+    <label for="idCategoria" class="form-label">Categoría</label>
+    <select id="idCategoria" name="idCategoria" class="form-control" th:field="*{idCategoria}" required>
+        <option th:each="cat : ${categorias}" th:value="${cat.idCategoria}" th:text="${cat.nombre}"></option>
+    </select>
+</div>
+
+
+
+
+                        <!-- Botones -->
+                        <button type="submit" class="btn btn-success">Guardar</button>
+                        <a href="/productos" class="btn btn-secondary">Cancelar</a>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:replace="fragments/jsComponents :: jsScripts"></div>
+</body>
+
+</html>

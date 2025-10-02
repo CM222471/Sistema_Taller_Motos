@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/header :: header(title = 'Productos')">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos</title>
+</head>
+
+<body>
+    <div id="wrapper">
+        <div th:replace="fragments/sidebar :: sidebar"></div>
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+            <!-- Main Content -->
+            <div id="content">
+                <div class="container-fluid p-4">
+                    <div
+                        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h1 class="h2">Listado de productos</h1>
+                    </div>
+
+                    <a th:href="@{/productos/nuevo}" class="btn btn-primary mb-3">Agregar Producto Nuevo</a>
+
+
+
+                    <!-- Mensaje Flash -->
+                    <div th:if="${mensaje}"
+                        th:classappend="${tipoMensaje == 'success' ? 'alert alert-success' : 'alert alert-danger'}"
+                        class="alert alert-dismissible fade show" role="alert">
+                        <span th:text="${mensaje}"></span>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-striped" width="100%" cellspacing="0" id="dataTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Precio</th>
+                                    <th>Categoria</th>
+                                    <th>Descripcion</th>
+                                    <th>Cantidad actual</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="p : ${productos}">
+                                    <td th:text="${p.idProducto}">ID</td>
+                                    <td th:text="${p.nombreProducto}">Nombre</td>
+                                    <td th:text="${p.precio}">Precio</td>
+                                    <td th:text="${p.idCategoria.nombre}">Categoria</td>
+                                    <td th:text="${p.descripcion}">Descripcion</td>
+                                    <td th:text="${p.stockActual}">Cantidad actual</td>
+                                    <td >
+                                        <span th:text="${p.estado == 'Disponible' ? 'Disponible' : 'Agotado'}"
+                                              th:classappend="${p.estado == 'Disponible'} ? 'badge bg-success' : 'badge bg-danger'">
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a th:href="@{/productos/editar/{id}(id=${p.idProducto})}">
+                                            <i class="fas fa-edit" style="color: #085691;"></i></a>
+
+                                        <a th:href="@{/productos/eliminar/{id}(id=${p.idProducto})}"
+                                            onclick="return confirm('¿Estás seguro de que deseas eliminar este producto?');">
+                                            <i class="fas fa-trash-alt" style="color: #085691;"></i></a>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(productos)}">
+                                    <td colspan="7" class="text-center">No hay productos registrados.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="fragments/jsComponents :: jsScripts"></div>
+</body>
+
+
+</html>
