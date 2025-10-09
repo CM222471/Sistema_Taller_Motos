@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/header :: header(title = 'Servicios')">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Servicio</title>
+</head>
+
+<body>
+    <div id="wrapper">
+        <div th:replace="fragments/sidebar :: sidebar"></div>
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <div class="container-fluid p-4">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h1 class="h2" th:text="${#strings.isEmpty(servicios.idServicio) ? 'Registrar nuevo servicio' : 'Editar servicio'}"></h1>
+                    </div>
+
+                    <!-- Mensajes flash -->
+                    <div th:if="${mensaje}"
+                        th:classappend="${tipoMensaje == 'success' ? 'alert alert-success alert-dismissible fade show' : 'alert alert-danger alert-dismissible fade show'}"
+                        role="alert">
+                        <span th:text="${mensaje}"></span>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <!-- Formulario -->
+                    <form th:action="@{${servicios.idServicio == null ? '/servicios/crear' : '/servicios/editar/' + servicio.idServicio}}"
+                          th:object="${servicios}" method="post">
+
+                        <!-- Cliente -->
+                        <div class="mb-3">
+                            <label for="cliente" class="form-label ">Cliente</label>
+                            <select id="cliente" name="cliente" class="form-control" th:field="*{idCliente}" required>
+                                <option value="">Seleccione un cliente</option>
+                                <option th:each="c : ${clientes}" th:value="${c.idCliente}" th:text="${c.nombres + ' ' + c.apellidos}"></option>
+                            </select>
+                        </div>
+
+                        <!-- Nombre servicio -->
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label ">Nombre del servicio</label>
+                            <input type="text" id="nombre" class="form-control" th:field="*{nombreServicio}" required>
+                        </div>
+
+                        <!-- Descripción -->
+                        <div class="mb-3">
+                            <label for="descripcion" class="form-label ">Descripción del servicio</label>
+                            <textarea id="descripcion" class="form-control" rows="3" th:field="*{descripcion}" required></textarea>
+                        </div>
+
+                        <!-- Costo -->
+                        <div class="mb-3">
+                            <label for="costo" class="form-label ">Costo base (Mano de obra)</label>
+                            <input type="number" step="0.01" id="costo" class="form-control" th:field="*{precioBase}" required>
+                        </div>
+
+                        <!-- Estado -->
+                        <div class="mb-4">
+                            <label for="estado" class="form-label ">Estado</label>
+                            <select id="estado" class="form-control" th:field="*{estado}" required>
+                                <option value="Pendiente">Pendiente</option>
+                                <option value="En Proceso">En Proceso</option>
+                                <option value="Finalizado">Finalizado</option>
+                            </select>
+                        </div>
+
+                        <!-- Productos -->
+                        <div class=" mb-4">
+                            <label class="form-label ">Productos Utilizados</label>
+                        
+
+                        <table class="table table-bordered align-middle text-center" id="tabla-productos">
+                            <thead class="table fw-bold" >
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Cantidad</th>
+                                    <th>Precio Unitario</th>
+                                    <th>Total</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Filas dinámicas aquí -->
+                            </tbody>
+                        </table>
+                        </div>
+
+                        <div class="mb-3 d-flex align-items-center gap-2">
+                            <div class="flex-grow-1">
+                              <label for="selectorProducto" class="form-label">Seleccionar producto</label>
+                              <select id="selectorProducto" class="form-control">
+                                  <option value="">-- Seleccione un producto --</option>
+                                  <option th:each="p : ${productos}"
+                                          th:value="${p.idProducto}"
+                                          th:data-precio="${p.precio}"
+                                          th:text="${p.nombreProducto}"></option>
+                              </select>
+                           </div>
+                          <div class="flex-grow-3">
+                             <label for="buscarProducto" class="form-label">Buscar</label>
+                               <input type="text" id="buscarProducto" class="form-control" placeholder="Escriba para filtrar...">
+                          </div>
+                        </div>
+
+
+
+                        <button type="button" class="btn btn-outline-primary " onclick="agregarProducto()">+ Agregar Producto</button>
+
+                        <!-- Botones finales -->
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-success btn-lg ">Guardar Servicio</button>
+                            <a href="/servicios" class="btn btn-secondary btn-lg">Cancelar</a>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script productos -->
+    <script>
+        function agregarProducto() {
+            const select = document.getElementById("selectorProducto");
+            const id = select.value;
+            const nombre = select.options[select.selectedIndex].text;
+            const precio = parseFloat(select.options[select.selectedIndex].getAttribute("data-precio"));
+
+            if (!id) {
+                alert("Seleccione un producto");
+                return;
+            }
+
+            const tbody = document.getElementById("tabla-productos").querySelector("tbody");
+            const fila = document.createElement("tr");
+            fila.innerHTML = `
+                <td>${nombre}<input type="hidden" name="productosIds" value="${id}"></td>
+                <td><input type="number" name="cantidades" class="form-control text-center" value="1" min="1" onchange="actualizarTotal(this)"></td>
+                <td>$${precio.toFixed(2)}</td>
+                <td class="total">$${precio.toFixed(2)}</td>
+                <td><button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove()">🗑 Eliminar</button></td>
+            `;
+            tbody.appendChild(fila);
+        }
+
+        function actualizarTotal(input) {
+            const fila = input.closest("tr");
+            const precio = parseFloat(fila.cells[2].innerText.replace("$", ""));
+            const cantidad = parseInt(input.value);
+            fila.querySelector(".total").innerText = `$${(precio * cantidad).toFixed(2)}`;
+        }
+    </script>
+
+    <script>
+document.addEventListener("DOMContentLoaded", () => {
+    const inputBuscar = document.getElementById("buscarProducto");
+    const selector = document.getElementById("selectorProducto");
+    const opciones = Array.from(selector.options);
+
+    inputBuscar.addEventListener("input", () => {
+        const texto = inputBuscar.value.toLowerCase().trim();
+
+        opciones.forEach(option => {
+            if (option.value === "") return; // Dejar la opción por defecto siempre visible
+
+            const coincide = option.text.toLowerCase().includes(texto);
+            option.style.display = coincide ? "block" : "none"; // Oculta las que no coinciden
+        });
+    });
+});
+</script>
+
+
+
+    <div th:replace="fragments/jsComponents :: jsScripts"></div>
+</body>
+
+</html>
