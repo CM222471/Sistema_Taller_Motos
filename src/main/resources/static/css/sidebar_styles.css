@@ -2,15 +2,26 @@
 
 :root {
     --sidebar-width: 280px;
-    --sidebar-bg: #2c3e50;
-    --sidebar-bg-light: #34495e;
-    --sidebar-text: #ecf0f1;
-    --sidebar-text-muted: #bdc3c7;
-    --sidebar-hover: #3498db;
-    --sidebar-active: #2980b9;
-    --sidebar-shadow: rgba(0, 0, 0, 0.1);
+
+    /* Fondo principal oscuro estilo metálico */
+    --sidebar-bg: #0d0d0d;
+    --sidebar-bg-light: #1a1a1a;
+
+    /* Colores de texto */
+    --sidebar-text: #f2f2f2;
+    --sidebar-text-muted: #9e9e9e;
+
+    /* Colores de interacción */
+    --sidebar-hover: #e30613;   /* Rojo del logo para resaltar al pasar el mouse */
+    --sidebar-active: #b3000f;  /* Rojo más oscuro para elemento activo */
+
+    /* Sombras */
+    --sidebar-shadow: rgba(0, 0, 0, 0.4);
+
+    /* Transiciones suaves */
     --transition: all 0.3s ease;
 }
+
 
 /* Toggle Button */
 .toggle-btn {

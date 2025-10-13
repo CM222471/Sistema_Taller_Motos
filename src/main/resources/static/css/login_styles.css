@@ -1,18 +1,26 @@
 /* login.css - Estilos para el login moderno */
 
 :root {
-    --primary-bg: #2c3e50;
-    --primary-bg-light: #34495e;
-    --accent-color: #3498db;
-    --accent-hover: #2980b9;
-    --text-light: #ecf0f1;
-    --text-muted: #bdc3c7;
-    --shadow-soft: rgba(0, 0, 0, 0.1);
-    --shadow-medium: rgba(0, 0, 0, 0.15);
-    --shadow-strong: rgba(52, 152, 219, 0.3);
+    /* Colores principales del taller */
+    --primary-bg: #0d0d0d;           /* Fondo oscuro estilo metálico */
+    --primary-bg-light: #1a1a1a;     /* Variación más clara para secciones */
+    --accent-color: #e30613;         /* Rojo principal del logo */
+    --accent-hover: #b3000f;         /* Rojo más oscuro para hover */
+    
+    /* Colores de texto */
+    --text-light: #f2f2f2;           /* Texto claro sobre fondo oscuro */
+    --text-muted: #aaaaaa;           /* Texto secundario o desactivado */
+    
+    /* Sombras y efectos */
+    --shadow-soft: rgba(0, 0, 0, 0.3);
+    --shadow-medium: rgba(0, 0, 0, 0.5);
+    --shadow-strong: rgba(227, 6, 19, 0.4); /* Brillo rojo en botones o detalles */
+    
+    /* Estilo general */
     --transition: all 0.3s ease;
-    --border-radius: 15px;
+    --border-radius: 12px;
 }
+
 
 /* Body específico para login */
 body.login-page {
