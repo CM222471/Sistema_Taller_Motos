@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/header :: header(title = 'Detalle del Servicio')">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+    <div id="wrapper">
+        <div th:replace="fragments/sidebar :: sidebar"></div>
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+            <!-- Main Content -->
+            <div id="content" class="container-fluid p-4">
+
+                <div class="mb-4">
+                    <h1 class="h2">Detalle del Servicio</h1>
+                </div>
+
+                <div class="card border shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h2 th:text="${servicio.nombreServicio}">Nombre del servicio</h2>
+                                <p class="text-muted mb-0">ID: <span th:text= "${servicio.idServicio}">12345</span></p>
+                            </div>
+                            <div>
+                                <h6>Monto del servicio:</h6>
+                            <div class="text-primary fw-bold fs-4">
+                                $<span th:text="${servicio.precioBase}">0.00</span>
+                            </div>
+                        </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <h5>Descripción</h5>
+                            <p class="text-muted" th:text="${servicio.descripcion}">Descripción del servicio...</p>
+                        </div>
+
+                        <div class="row mb-3">
+                             <div class="col-md-3">
+                                  <h6>Estado</h6>
+                                  <p th:text="${servicio.estado}">pendiente</p>
+                             </div>
+                              <div class="col-md-3">
+                                  <h6>Estado de Pago</h6>
+                                  <p th:text="${servicio.estadoPago}">pendiente</p>
+                             </div>
+                              <div class="col-md-3">
+                                  <h6>Fecha de Servicio</h6>
+                                   <p th:text="${servicio.fechaServicio}">01/01/2025</p>
+                              </div>
+                               <div class="col-md-3">
+                                 <h6>Cliente</h6>
+                                 <p th:text="${servicio.idCliente.nombres + ' ' + servicio.idCliente.apellidos }">Nombre del cliente</p>
+                              </div>
+                            </div>
+
+
+                        <div class="d-flex gap-2 mt-4">
+                            <a th:href="@{/servicios/editar/{id}(id=${servicio.idServicio})}" class="btn btn-primary">
+                                Editar Servicio
+                            </a>
+                            <a th:href="@{/servicios/eliminar/{id}(id=${servicio.idServicio})}" class="btn btn-outline-danger">
+                                Eliminar Servicio
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="fragments/jsComponents :: jsScripts"></div>
+</body>
+
+</html>

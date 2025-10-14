@@ -1,13 +1,12 @@
 package com.sistema.taller.demo.service;
 
-import com.sistema.taller.demo.model.Usuario;
-import com.sistema.taller.demo.model.UsuarioActividad;
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.sistema.taller.demo.model.Usuario;
+import com.sistema.taller.demo.model.UsuarioActividad;
 import com.sistema.taller.demo.repository.UsuarioRepository;
 
 @Service
@@ -18,6 +17,9 @@ public class UsuarioService {
     public List<Usuario> obtenerTodo() {
         return usuarioRepository.findAll();
     }
+    public Usuario obtenerPorUsername(String username) {
+    return usuarioRepository.findByUsername(username).orElse(null);
+}
 
     public Usuario obtenerPorID(Integer id) {
         return usuarioRepository.findById(id).orElse(null);
