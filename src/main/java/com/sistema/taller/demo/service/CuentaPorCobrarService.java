@@ -1,14 +1,12 @@
 package com.sistema.taller.demo.service;
 
-import com.sistema.taller.demo.model.CuentaPorCobrar;
-import com.sistema.taller.demo.model.EstadoCuenta;
-import com.sistema.taller.demo.repository.CuentaPorCobrarRepository;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+
+import com.sistema.taller.demo.model.CuentaPorCobrar;
+import com.sistema.taller.demo.repository.CuentaPorCobrarRepository;
 
 @Service
 public class CuentaPorCobrarService {
@@ -16,32 +14,20 @@ public class CuentaPorCobrarService {
     @Autowired
     private CuentaPorCobrarRepository cuentaPorCobrarRepository;
 
-    public List<CuentaPorCobrar> listarCuentasActivas() {
-        return cuentaPorCobrarRepository.findByEstadoIn(
-                Arrays.asList(EstadoCuenta.PENDIENTE, EstadoCuenta.VENCIDA));
+    public List<CuentaPorCobrar> obtenerTodos(){
+        return cuentaPorCobrarRepository.findAll();
     }
-
-    public CuentaPorCobrar liquidarCuenta(Long id) throws Exception {
-        // 1. Buscar la cuenta
-        Optional<CuentaPorCobrar> cuentaOpt = cuentaPorCobrarRepository.findById(id);
-
-        if (cuentaOpt.isEmpty()) {
-            throw new Exception("Cuenta por Cobrar no encontrada con ID: " + id);
-        }
-
-        CuentaPorCobrar cuenta = cuentaOpt.get();
-
-        // 2. Validar que la cuenta esté activa para poder liquidarla
-        if (cuenta.getEstado() == EstadoCuenta.LIQUIDADA || cuenta.getEstado() == EstadoCuenta.CANCELADA) {
-            throw new Exception("La cuenta ID " + id + " ya está liquidada o cancelada.");
-        }
-
-        // 3. Aplicar la liquidación
-        cuenta.setEstado(EstadoCuenta.LIQUIDADA);
-        cuenta.setFechaLiquidacion(LocalDate.now());
-        cuenta.setMontoPendiente(0.0);
-
-        // 4. Guardar los cambios
+    public CuentaPorCobrar guardar(CuentaPorCobrar cuenta) {
         return cuentaPorCobrarRepository.save(cuenta);
     }
+
+    public void eliminar(Integer id) {
+        cuentaPorCobrarRepository.deleteById(id);
+    }
+
+    public CuentaPorCobrar obtenerPorId(Integer id){
+        return cuentaPorCobrarRepository.findById(id).orElse(null);
+    }
+
+    
 }

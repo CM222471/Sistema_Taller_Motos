@@ -1,4 +1,5 @@
 package com.sistema.taller.demo.controller;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,14 +7,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.sistema.taller.demo.model.CuentaPorCobrar;
 import com.sistema.taller.demo.model.DetalleServicio;
 import com.sistema.taller.demo.model.Productos;
 import com.sistema.taller.demo.model.Servicios;
 import com.sistema.taller.demo.service.ClienteService;
+import com.sistema.taller.demo.service.CuentaPorCobrarService;
 import com.sistema.taller.demo.service.DetalleServicioService;
 import com.sistema.taller.demo.service.ProductoService;
 import com.sistema.taller.demo.service.ServicioService;
@@ -30,6 +34,8 @@ public class ServicioController {
     private ProductoService productoService;
     @Autowired
     private DetalleServicioService detalleService;
+    @Autowired
+    private CuentaPorCobrarService cuentaPorCobrarService;
     
     
 
@@ -40,6 +46,17 @@ public class ServicioController {
         model.addAttribute("servicios", servicios);
         return "servicios/servicios";
     }
+    @GetMapping("/servicios/detalle/{id}")
+    public String detalleServicio(@PathVariable("id") Integer id, Model model) {
+    Servicios servicio = servicioService.obtenerPorId(id);
+    if (servicio == null) {
+        // Redirigir a otra página o mostrar mensaje de error
+        return "redirect:/servicios?error=ServicioNoEncontrado";
+    }
+    model.addAttribute("servicio", servicio);
+    return "servicios/servicio_detalle";
+    }
+    
 
     // Formulario nuevo servicio
     @GetMapping("/servicios/nuevo")
@@ -77,11 +94,31 @@ public class ServicioController {
                 detalle.setPrecioUnitario(productousado.getPrecio());
                 detalle.setSubtotal(productousado.getPrecio() * cantidad);
                 detalleService.guardar(detalle);
+
+                // 🔹 Actualizar inventario
+                 int nuevoStock = productousado.getStockActual() - cantidad;
+                  if (nuevoStock < 0) {
+                // Evita stock negativo
+                    throw new IllegalArgumentException("Stock insuficiente para el producto: " + productousado.getNombreProducto());
+                    }
+                  productousado.setStockActual(nuevoStock);
+                 productoService.guardar(productousado);
             }
             }
             Servicios servicioexistente = servicioService.obtenerPorId(servicio.getIdServicio());
             servicioexistente.setPrecioBase(Total + manodeobra);
             servicioService.guardar(servicioexistente);
+
+            CuentaPorCobrar cuenta = new CuentaPorCobrar();
+            cuenta.setServicio(servicioexistente);
+            cuenta.setCliente(servicioexistente.getIdCliente());
+            cuenta.setMontoTotal(servicioexistente.getPrecioBase()); // Total + mano de obra
+            cuenta.setMontoPagado(0.0);
+            cuenta.setSaldoPendiente(cuenta.getMontoTotal());
+            cuenta.setUltimaFechaPago(LocalDate.now());
+            cuenta.setEstado("Pendiente");
+
+            cuentaPorCobrarService.guardar(cuenta);
             redirectAttributes.addFlashAttribute("mensaje", "El servicio se registró exitosamente.");
             redirectAttributes.addFlashAttribute("tipoMensaje", "success");
         } catch (Exception e) {

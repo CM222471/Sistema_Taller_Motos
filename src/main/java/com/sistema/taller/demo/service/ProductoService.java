@@ -6,13 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sistema.taller.demo.model.Productos;
-import com.sistema.taller.demo.repository.ProductoRepository;
+import com.sistema.taller.demo.repository.ProductosRepository;
 
 @Service
 public class ProductoService {
 
     @Autowired
-    private ProductoRepository productoRepository;
+    private ProductosRepository productoRepository;
 
     public List<Productos> obtenerTodos(){
         return productoRepository.findAll();
@@ -32,6 +32,11 @@ public class ProductoService {
 
     public void eliminar(Integer id) {
         productoRepository.deleteById(id);
+    }
+
+    public List<Object[]> obtenerStockPorCategoria() {
+        // Llama al método del repository que devuelve nombre de categoría + stock total
+        return productoRepository.obtenerStockPorCategoria();
     }
 
 

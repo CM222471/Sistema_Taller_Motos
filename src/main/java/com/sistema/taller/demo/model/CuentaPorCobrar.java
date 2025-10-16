@@ -1,57 +1,72 @@
 package com.sistema.taller.demo.model;
 
-import jakarta.persistence.*;
 import java.time.LocalDate;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 @Entity
-@Table(name = "cuentas_por_cobrar")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "CUENTAS_PENDIENTES")
 public class CuentaPorCobrar {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "ID_CUENTA")
+    private Long idCuenta;
 
     @ManyToOne
-    @JoinColumn(name = "cliente_id")
-    private Clientes cliente;    
-    private Double montoTotal;    
-    private String descripcion;    
-    private String numFactura;
-    private Double montoPendiente;    
-    private LocalDate fechaEmision;
-    private LocalDate fechaVencimiento;    
-    @Enumerated(EnumType.STRING)
-    private EstadoCuenta estado;     
-    private LocalDate fechaLiquidacion; 
+    @JoinColumn(name = "ID_CLIENTE", nullable = false)
+    private Clientes cliente;
 
-    public Clientes getCliente() { return cliente; }
-    public void setCliente(Clientes cliente) { this.cliente = cliente; }
+    @Column(name = "MONTO_TOTAL", nullable = false)
+    private Double montoTotal;
+
+    @Column(name = "MONTO_PAGADO", nullable = false)
+    private Double montoPagado = 0.0;
+
+    @Column(name = "SALDO_PENDIENTE", nullable = false)
+    private Double saldoPendiente;
+
+    @Column(name = "ULTIMA_FECHA_PAGO")
+    private LocalDate ultimaFechaPago;
+
+    @Column(name = "ESTADO", nullable = false)
+    private String estado;
+
+    @ManyToOne
+    @JoinColumn(name = "ID_SERVICIO", nullable = false)
+    private Servicios servicio;
+
+
     
-    public Double getMontoTotal() { return montoTotal; }
-    public void setMontoTotal(Double montoTotal) { this.montoTotal = montoTotal; }
-    
-    public String getDescripcion() { return descripcion; }
-    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
-    
-    public String getNumFactura() { return numFactura; }
-    public void setNumFactura(String numFactura) { this.numFactura = numFactura; }
 
-    
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    // Método auxiliar para actualizar saldo y estado automáticamente
+    public void registrarPago(double monto, LocalDate fechaPago) {
+        this.montoPagado += monto;
+        this.saldoPendiente = this.montoTotal - this.montoPagado;
+        this.ultimaFechaPago = fechaPago;
 
-    public Double getMontoPendiente() { return montoPendiente; }
-    public void setMontoPendiente(Double montoPendiente) { this.montoPendiente = montoPendiente; }
-
-    public LocalDate getFechaEmision() { return fechaEmision; }
-    public void setFechaEmision(LocalDate fechaEmision) { this.fechaEmision = fechaEmision; }
-
-    public LocalDate getFechaVencimiento() { return fechaVencimiento; }
-    public void setFechaVencimiento(LocalDate fechaVencimiento) { this.fechaVencimiento = fechaVencimiento; }
-
-    public EstadoCuenta getEstado() { return estado; }
-    public void setEstado(EstadoCuenta estado) { this.estado = estado; }
-
-    public LocalDate getFechaLiquidacion() { return fechaLiquidacion; }
-    public void setFechaLiquidacion(LocalDate fechaLiquidacion) { this.fechaLiquidacion = fechaLiquidacion; }
+        if (this.saldoPendiente <= 0) {
+            this.estado = "Completado";
+            this.saldoPendiente = 0.0; // evitar valores negativos
+        } else if (this.montoPagado > 0) {
+            this.estado = "Parcial";
+        } else {
+            this.estado = "Pendiente";
+        }
+    }
 }
